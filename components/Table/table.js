@@ -1,5 +1,5 @@
 import {Alert, Image, Keyboard, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {Button, CheckBox, Content, Icon, Segment} from 'native-base';
+import {Body, Button, CheckBox, Container, Content, Header, Icon, Left, Right, Title} from 'native-base';
 import React,{useState} from 'react';
 
 import {DataTable} from 'react-native-paper';
@@ -10,6 +10,7 @@ export function DataTables(props) {
   const [list, setList] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [id, setId] = useState(null);
+  const [selectAll, setSelectAll] = useState(false);
   // const [allSelected, setAllSelected] = useState(false);
   // const [deleteArray, setDelArray] = useState([]);
   
@@ -17,8 +18,40 @@ export function DataTables(props) {
     setList(data);
   },[data]);
   
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
+  const toggleModal = (id) => {
+    Alert.alert(
+      "DELETE",
+      "Do you want to delete this item?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => deleteItem(id) }
+      ],
+      { cancelable: false }
+    );
+
+    // setModalVisible(!isModalVisible);
+  };
+
+  const toggleDeleteAll = () => {
+    Alert.alert(
+      "DELETE",
+      "Do you want to delete all items?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => deleteAllItems() }
+      ],
+      { cancelable: false }
+    );
+
+    // setModalVisible(!isModalVisible);
   };
 
   const closeModal = () =>{
@@ -36,7 +69,7 @@ export function DataTables(props) {
 
   const deleteAllItems = () => {
     props.DeleteAll();
-    setModalVisible(!isModalVisible);
+    setSelectAll(!selectAll);
   }
 
   // const selectAnItem = (index) => {
@@ -73,43 +106,76 @@ export function DataTables(props) {
       list &&
         list.length > 0 &&
         list.map((item, index) => (
+          // <View>
           <DataTable.Row key={index}>
-            {/* <DataTable.Cell>
+            <DataTable.Cell style={{justifyContent:"flex-start"}}>
             <View style={{flex:1,justifyContent:"center", alignItems:"center",flexDirection:"row"}}>
             <View style={{marginRight:20}}>
-            <CheckBox onPress={()=> selectAnItem(index)} checked={deleteArray.includes(index)}/>
+            <CheckBox color="green" style={{borderColor:'white'}} checked={selectAll}/>
             </View>
             <View>
             <Text>{index}</Text>
             </View>
             </View>
-            </DataTable.Cell> */}
-            <DataTable.Cell>{index}</DataTable.Cell>
+            </DataTable.Cell>
+            {/* <DataTable.Cell>{index}</DataTable.Cell> */}
             {/* <DataTable.Cell style={{width:50}}>{index}</DataTable.Cell> */}
-            <DataTable.Cell style={{flex:1, justifyContent:"flex-start"}}>{item.code}</DataTable.Cell>
-            <DataTable.Cell style={{flex:1, justifyContent:"center",alignItems:"flex-end",paddingTop:7}}><Button danger onPress={() => deleteItem(item.id)}><Icon name="trash"/></Button></DataTable.Cell>
+            <DataTable.Cell style={{justifyContent:"center"}}><Text style={{fontSize:10}}>{item.code}</Text></DataTable.Cell>
+            <DataTable.Cell style={{justifyContent:"flex-end",paddingTop:7}}><Button transparent onPress={() => toggleModal(item.id)}><Icon name="trash"  style={{fontSize: 20, color: '#808080'}}/></Button></DataTable.Cell>
           </DataTable.Row>
+          // </View>
     )))
   }
   
   // Alert.alert('table');
   return (
-    <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
-    <View style={styles.container}>
-    <View style={{flex:1, justifyContent:"center",flexDirection:"row", alignItems:"center"}}>
+    // <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
+    <Container>
+    <Header transparent>
+          <Left/>
+          <Body>
+           <View style={{flex:1,justifyContent:"center",marginRight:10}}>
+            <Title><Text style={{fontStyle:"italic", fontSize:20, color:"#4615b2"}}> Blue</Text>
+            <Text style={{fontStyle:"italic", fontSize:20, color:"green"}}>East</Text></Title>
+            
+            <View style={{flex:1, justifyContent:"center",flexDirection:"row",alignItems:"center",padding:10}}>
+            
+            <View>
+            <View style={{flexDirection:"row", alignItems:"center",marginRight:20}}>
+            <CheckBox style={{marginRight:15}} color="green" onPress={()=> setSelectAll(!selectAll)} checked={selectAll}/>
+            <Text style={{color:"black",fontSize:15}}>Select All</Text>
+            </View>
+            </View>
+
+            <View>
+            <Text style={{color:"black",fontSize:13.5,marginRight:20}}>Batch Number</Text>
+            </View>
+            
+            <View style={{margin:20}}>
+            {
+            !selectAll ? <Text style={{color:"black", fontSize:13.5}}>Action</Text> : (
+              <Button transparent onPress={toggleDeleteAll}><Text style={{color:"red",fontSize:14}}>Delete All</Text></Button>
+            )
+            }
+            </View>
+            </View>
+
+            </View>
+          </Body>
+          <Right />
+    </Header>
+      <ScrollView>
+    <View style={{}}>
+
+    {/* <View style={{flex:1, justifyContent:"center",flexDirection:"row", alignItems:"center",marginTop:40}}>
         <Image style={{width:90, height:35, borderRadius:4,marginBottom:3}} source={require('../../assets/blueeast.png')}/>
-    </View>
+    </View> */}
        
       <DataTable>
-        <DataTable.Header>
-          <DataTable.Title style={{flex:1, justifyContent:"flex-start"}}>No</DataTable.Title>
-          <DataTable.Title style={{flex:1, justifyContent:"center"}}>Batch Number</DataTable.Title>
-          <DataTable.Title style={{flex:1, justifyContent:"center"}}>Action</DataTable.Title>
-        </DataTable.Header>
-
-        <ScrollView>
+        
+        <View style={{flex:1,margin:2}}>
         {Load(list)}
-        </ScrollView>
+        </View>
 
   
     <Modal isVisible={isModalVisible}>
@@ -133,17 +199,19 @@ export function DataTables(props) {
           {/* <Button style={{padding:10}} onPress={()=> selectAll()}>
             <Text>{ allSelected ? 'Unselect All' : 'Select All'}</Text>
           </Button> */}
-          { list && list.length > 0 &&
+          {/* { list && list.length > 0 &&
           <View>
           <Button style={{padding:10,width:332, height:30, marginLeft:16,margin:10,justifyContent:"center"}} onPress={toggleModal}>
-            <Text>Delete All</Text>
+            <Text style={{color:"white"}}>Delete All</Text>
           </Button>
           </View>
-          }
+          } */}
         {/* </Segment> */}
       </DataTable>
     </View>
-    </TouchableWithoutFeedback>
+      </ScrollView>
+    {/* // </TouchableWithoutFeedback> */}
+    </Container>
     
   );
 }

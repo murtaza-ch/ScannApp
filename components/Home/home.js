@@ -18,16 +18,16 @@ export function Home(props) {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
+    // <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
     <View style={styles.container}>
-      <TextInput style={{width:250}}
+      <TextInput style={{width:100}}
         label=" Enter Truck Name"
         value={text}
         onChangeText={(text) => setText(text)}
       />
-      <Button style={{borderWidth:2, padding:8, marginLeft:4, paddingTop:13, paddingBottom:13}} disabled={disable} onPress={setHandleTruck}>Submit</Button>
+      <Button style={{borderWidth:2, backgroundColor:"red", marginLeft:4}} disabled={disable} onPress={setHandleTruck}>Submit</Button>
     </View>
-    </TouchableWithoutFeedback>
+    // {/* </TouchableWithoutFeedback> */}
   );
 }
 
