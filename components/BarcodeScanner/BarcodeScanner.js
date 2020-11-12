@@ -1,15 +1,12 @@
 import * as Permissions from 'expo-permissions';
 
-import {Alert, Dimensions, Image, Keyboard, KeyboardAvoidingView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {Button, Icon} from 'native-base'
+import {Button, Footer} from 'native-base'
+import {Keyboard, KeyboardAvoidingView, Text, TouchableWithoutFeedback, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 import {BarCodeScanner} from 'expo-barcode-scanner';
 import Modal from 'react-native-modal';
 import {TextInput} from 'react-native-paper';
-
-// import {EventRegister} from 'react-native-event-listeners';
-// import {Permissions} from 'expo';
 
 export function BarCodeScanners(props) {
   const [hasPermission, setHasPermission] = useState(null);
@@ -18,8 +15,12 @@ export function BarCodeScanners(props) {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const [text, setText] = useState('');
-  const [disable, setDisable] = useState(false);
+  // const [disable, setDisable] = useState(false);
   const [visible, setVisible] = useState(true);
+
+  useEffect(()=> {
+    setVisible(props.disable)
+  });
 
   // const setHandleTruck = () => {
   //   // setDisable(true);
@@ -65,14 +66,12 @@ export function BarCodeScanners(props) {
   }
 
   return (
-    
-    <View>
-    <View style={{flex:1, flexDirection:"column"}}>
-
-    <View style={{flex:1,flexDirection:"row", justifyContent:"center"}}>
-    <KeyboardAvoidingView behavior="height">
+    <>
+      <Footer style={{ flex: 1, flexDirection: "column", padding: 10,height:300, backgroundColor:"white"}}>
+        <View style={{ flexDirection: "row" }}>
+        <KeyboardAvoidingView behavior="height">
     <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
-      <TextInput style={{width:210, height:55}}
+      <TextInput style={{width:180, height:55}}
         label=" Enter Truck Name"
         value={text}
         onChangeText={(text) => setText(text)}
@@ -83,61 +82,48 @@ export function BarCodeScanners(props) {
     <Button style={{marginLeft:9,padding:40, height:55}} onPress={toggleModal}>
     <Text style={{color:"white"}}>SCAN</Text>
     </Button>
-    </View>
-
-    <View>
-    <Button style={{marginTop:18,width:340, height:40,justifyContent:"center"}} onPress={()=>props.exportData()} disabled={disable}>
+        </View>
+    
+    <View style={{flex:1, justifyContent:"flex-start"}}>
+    <Button style={{marginTop:18,width:300, height:40,justifyContent:"center"}} onPress={()=>props.exportData()}>
      <Text style={{color:'white'}}>Submit</Text>
      </Button>
     </View>
 
-    <View style={{flex:1, justifyContent:"center",flexDirection:"row", alignItems:"center", bottom:0}}>
-    <Text style={{paddingTop:4}}>POWERED BY </Text>
+    {/* <View style={{flex:1, justifyContent:"center",flexDirection:"row", alignItems:"flex-start", bottom:0}}>
+    <Text style={{paddingTop:4}}>POWERED BY</Text>
     <Text style={{fontStyle:"italic", fontSize:20, color:"#4615b2"}}> Blue</Text>
     <Text style={{fontStyle:"italic", fontSize:20, color:"green"}}>East</Text>
-    </View>
+    </View> */}
     
-    </View>
+    </Footer>
 
      <Modal isVisible={isModalVisible}>
      <View style={{flex: 1,justifyContent:"space-between",
      alignItems:"center", backgroundColor:"#ffffff", borderRadius:10, padding:10, }}>
      
-     <View style={{flex:1,justifyContent:"flex-start",right:-130}}>
-     <Button transparent style={{padding:20}} onPress={closeModal}>
-     <Text style={{color:"gray"}}><Icon  name='ios-close-circle' style={{color:'gray'}}/></Text>
-     </Button>
+     <View style={{flex:1,justifyContent:"center", flexDirection:"row",alignItems:"center"}}>
+    
+     <Text style={{paddingTop:3}}>POWERED BY </Text>
+     <Text style={{fontStyle:"italic", fontSize:20, color:"#4615b2"}}>Blue</Text>
+    <Text style={{fontStyle:"italic", fontSize:20, color:"green"}}>East</Text>
      </View>
      
       {scanned === true ? (
         
         <BarCodeScanner
           onBarCodeScanned={handleBarCodeScanned}
-          style={{width:323, height:470}}
+          style={{width:340, height:380}}
         />
 
       ) : null}
       <View style={{flex:1, justifyContent:"center",flexDirection:"row", alignItems:"center"}}>
-        <Text>POWERED BY </Text>
-        <Image style={{width:35, height:35, borderRadius:50}} source={require('../../assets/blueeast.png')}/>
-        </View>
+      <Button style={{padding:20, height:35,margin:6, width:100,justifyContent:"center"}} onPress={closeModal}>
+     <Text style={{color:"white"}}>CLOSE</Text>
+     </Button>
+      </View>
       </View>
       </Modal>
-      {/* {scanned === false ? (
-        <Button
-          id="scanBtn"
-          title={'Tap to Scan'}
-          onPress={() => setScanned(true)}
-        />
-      ) : null} */}
-    </View>
+      </>
   );
 }
-
-const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    alignItems:"center",
-    justifyContent:"center"
-  }
-})

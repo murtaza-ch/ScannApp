@@ -13,6 +13,7 @@ export default function App() {
   const [data, setData] = React.useState([]);
   const [truckname, setTruck] = React.useState('');
   const [error, setError] = React.useState(null);
+  const [disable, setDisable] = React.useState(false);
   
   const Scannedhandler = (type, code, truck) => {
 
@@ -53,14 +54,14 @@ export default function App() {
         'Content-Type': 'application/json'
       }
     }
-    // const code1 = data.find((d) => d.code === code);
-    // if (code1 === undefined) {
+    const code1 = data.find((d) => d.code === code);
+    if (code1 === undefined) {
       // axios.post('http://18.195.33.234:3000/submit-data', JSON.stringify(body),config)
       // .then((res)=> console.log(res.data))
       // .catch((err)=> console.log(err));
-      // setError(null)
+      setError(null)
       setData([...data, obj]);
-    // }
+    }
     // if (code1 !== undefined) {
     //   setError('Item already scanned!');
     // }
@@ -75,6 +76,7 @@ export default function App() {
   };
   
   const exportData = () => {
+    setDisable(!disable);
     var today = new Date();
     let h = today.getHours().toString();
     let m = today.getMinutes().toString();
@@ -90,8 +92,8 @@ export default function App() {
     }
 
     const time = h+''+m+''+s
-    console.log(time);
-    console.log('---',h,m,s);
+    // console.log(time);
+    // console.log('---',h,m,s);
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
@@ -99,7 +101,7 @@ export default function App() {
     let arrr = []
     data.forEach((obj) => {
       const obj1 = {
-        "BATCH NO": obj.code,
+        "BATCHNO": obj.code,
         "TREGNO": truckname,
         "UPLDATE": today,
         "UPLTIME": time,
@@ -107,7 +109,7 @@ export default function App() {
       arrr.push(obj1)
     });
     const body = {
-      "bapiName": "ZBAPI_BATCH_SCANNING_SAVE",
+      "bapiName": "ZBAPI_BATCH_SCANNING_SAVE2",
       "credentials": {
         "user": "mm-01",
         "passwd": "sapqmmm",
@@ -121,16 +123,31 @@ export default function App() {
     };
     console.log(body);
 
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // }
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
 
-    // // console.log(body);
-    // axios.post('http://18.195.33.234:3000/submit-data', JSON.stringify(body),config)
-    // .then((res)=> console.log(res.data))
-    // .catch((err)=> console.log(err));
+    // console.log(body);
+    axios.post('http://18.195.33.234:3000/submit-data', JSON.stringify(body),config)
+    .then((res)=>{
+      Alert.alert(
+        "Success",
+        "Saved successfully!",
+        [
+          { text: "OK"}
+        ],
+        { cancelable: false }
+      );
+      setData([]);
+      console.log(res.data)
+    })
+    .catch((err)=> {
+      
+      console.log(err)
+    });
+    setDisable(!disable)
   }
 
   
@@ -148,14 +165,14 @@ export default function App() {
   
   return (
     // <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
-    <View style={{flex:1, flexDirection:"column", padding:6}}>
-      <View style={{flex:3, marginBottom:5,paddingTop:6}}>
+    <View style={{flex:1, flexDirection:"column"}}>
+      <View style={{flex:3, marginBottom:5}}>
         <DataTables data={data} DeleteItem = {DeleteItem} DeleteAll = {DeleteAll} />
       </View>
 
-      <View style={{flex:1,flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+      <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
         {/* <Home handleTruck = {handleTruck} /> */}
-        <BarCodeScanners key={data} exportData = {exportData} handleTruck = {handleTruck} Scannedhandler={Scannedhandler} />
+        <BarCodeScanners disable={disable} key={data} exportData = {exportData} handleTruck = {handleTruck} Scannedhandler={Scannedhandler} />
       </View>
     </View>
     // </TouchableWithoutFeedback>

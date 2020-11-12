@@ -131,14 +131,15 @@ export function DataTables(props) {
   return (
     // <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
     <Container>
-    <Header transparent>
+    <Header style={{height:80}}>
           <Left/>
           <Body>
            <View style={{flex:1,justifyContent:"center",marginRight:10}}>
-            <Title><Text style={{fontStyle:"italic", fontSize:20, color:"#4615b2"}}> Blue</Text>
-            <Text style={{fontStyle:"italic", fontSize:20, color:"green"}}>East</Text></Title>
+            <Title>
+            <Text style={{fontSize:20, color:"black"}}>Batch Scanning App</Text>
+            </Title>
             
-            <View style={{flex:1, justifyContent:"center",flexDirection:"row",alignItems:"center",padding:10}}>
+            <View style={{flex:1, justifyContent:"center",flexDirection:"row",alignItems:"center"}}>
             
             <View>
             <View style={{flexDirection:"row", alignItems:"center",marginRight:20}}>
@@ -148,7 +149,7 @@ export function DataTables(props) {
             </View>
 
             <View>
-            <Text style={{color:"black",fontSize:13.5,marginRight:20}}>Batch Number</Text>
+            <Text style={{color:"black",fontSize:13.5}}>Batch Number</Text>
             </View>
             
             <View style={{margin:20}}>
@@ -166,11 +167,6 @@ export function DataTables(props) {
     </Header>
       <ScrollView>
     <View style={{}}>
-
-    {/* <View style={{flex:1, justifyContent:"center",flexDirection:"row", alignItems:"center",marginTop:40}}>
-        <Image style={{width:90, height:35, borderRadius:4,marginBottom:3}} source={require('../../assets/blueeast.png')}/>
-    </View> */}
-       
       <DataTable>
         
         <View style={{flex:1,margin:2}}>
@@ -192,35 +188,11 @@ export function DataTables(props) {
         
       </View>
       </Modal>
-      {/* <Segment style={{backgroundColor:"#ffffff"}}> */}
-          {/* <Button first style={{padding:10}}>
-            <Text>Delete Selected</Text>
-          </Button> */}
-          {/* <Button style={{padding:10}} onPress={()=> selectAll()}>
-            <Text>{ allSelected ? 'Unselect All' : 'Select All'}</Text>
-          </Button> */}
-          {/* { list && list.length > 0 &&
-          <View>
-          <Button style={{padding:10,width:332, height:30, marginLeft:16,margin:10,justifyContent:"center"}} onPress={toggleModal}>
-            <Text style={{color:"white"}}>Delete All</Text>
-          </Button>
-          </View>
-          } */}
-        {/* </Segment> */}
       </DataTable>
     </View>
       </ScrollView>
-    {/* // </TouchableWithoutFeedback> */}
     </Container>
     
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 50,
-    //  flex: 1,
-    // backgroundColor: '#fff',
-    justifyContent: 'flex-end',
-  },
-});
